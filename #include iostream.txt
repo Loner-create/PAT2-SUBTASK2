@@ -1,0 +1,71 @@
+#include <iostream>
+#include <string>
+#include <map>
+using namespace std;
+
+// Morse code mapping
+map<char, string> morseMap = {
+    {'A', ".-"},   {'B', "-..."}, {'C', "-.-."}, {'D', "-.."},
+    {'E', "."},    {'F', "..-."}, {'G', "--."},  {'H', "...."},
+    {'I', ".."},   {'J', ".---"}, {'K', "-.-"},  {'L', ".-.."},
+    {'M', "--"},   {'N', "-."},   {'O', "---"},  {'P', ".--."},
+    {'Q', "--.-"}, {'R', ".-."},  {'S', "..."},  {'T', "-"},
+    {'U', "..-"},  {'V', "...-"}, {'W', ".--"},  {'X', "-..-"},
+    {'Y', "-.--"}, {'Z', "--.."}, {' ', "/"} // space → slash
+};
+
+// Function to encode text into Morse
+string encodeMorseCode(const string& text) {
+    string encoded = "";
+    for (char c : text) {
+        char upper = toupper(c);
+        if (morseMap.count(upper)) {
+            encoded += morseMap[upper] + " ";
+        }
+    }
+    return encoded;
+}
+
+// Function to decode Morse back into text
+string decodeMorseCode(const string& morse) {
+    string decoded = "";
+    string symbol = "";
+    map<string, char> reverseMap;
+
+    // Build reverse lookup
+    for (auto& pair : morseMap) {
+        reverseMap[pair.second] = pair.first;
+    }
+
+    // Split by spaces
+    for (char c : morse) {
+        if (c != ' ') {
+            symbol += c;
+        } else {
+            if (!symbol.empty()) {
+                decoded += reverseMap[symbol];
+                symbol = "";
+            }
+        }
+    }
+    // Handle last symbol
+    if (!symbol.empty()) {
+        decoded += reverseMap[symbol];
+    }
+
+    return decoded;
+}
+
+int main() {
+    string plaintext;
+    cout << "Enter text to encode: ";
+    getline(cin, plaintext);
+
+    string encodedtext = encodeMorseCode(plaintext);
+    cout << "Encoded text: " << encodedtext << endl;
+
+    string decodedtext = decodeMorseCode(encodedtext);
+    cout << "Decoded text: " << decodedtext << endl;
+
+    return 0;
+}
